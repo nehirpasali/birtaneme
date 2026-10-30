@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aşk adamıma...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 420px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            line-height: 1.35;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            margin-bottom: 35px;
+        }
+
+        .date-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .date-inputs input {
+            width: 70px;
+            height: 55px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .date-inputs input:focus {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.15);
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .date-inputs input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.1rem;
+        }
+
+        .slash {
+            font-size: 1.8rem;
+            opacity: 0.6;
+            font-weight: 300;
+        }
+
+        .date-inputs input.year {
+            width: 95px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e94560, #c23a51);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            min-height: 20px;
+        }
+
+        .error.show {
+            opacity: 1;
+        }
+
+        .hint {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            opacity: 0.45;
+        }
+
+        /* ===== GALERİ ===== */
+        #gallery {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .gallery-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 22px 20px 12px;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.65), transparent);
+            z-index: 20;
+        }
+
+        .gallery-header h2 {
+            font-size: 1.35rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .gallery-header p {
+            font-size: 0.82rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .photos-wrapper {
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photos-track {
+            column-count: 2;
+            column-gap: 14px;
+            padding: 110px 16px 80px;
+            animation: slowScroll 70s linear infinite;
+            width: 100%;
+        }
+
+        .photo-card {
+            break-inside: avoid;
+            margin-bottom: 14px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-caption {
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.28);
+            line-height: 1.35;
+        }
+
+        @keyframes slowScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        @media (max-width: 400px) {
+            .photos-track {
+                column-gap: 10px;
+                padding: 100px 12px 70px;
+            }
+            .photo-card {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ŞİFRE EKRANI -->
+    <div class="container" id="loginScreen">
+        <h1>Güvenlikle Alaqalı Hiçbir Sorunumuz Bulunmamakta</h1>
+        <p class="subtitle">Tekte açamazsan kavga ederiz :)</p>
+
+        <div class="date-inputs">
+            <input type="text" id="day" maxlength="2" placeholder="GG" inputmode="numeric">
+            <span class="slash">/</span>
+            <input type="text" id="month" maxlength="2" placeholder="AA" inputmode="numeric">
+            <span class="slash">/</span>
+            <input type="text" id="year" class="year" maxlength="4" placeholder="YYYY" inputmode="numeric">
+        </div>
+
+        <button onclick="checkPassword()">Aç</button>
+
+        <p class="error" id="errorMsg">ALLAH SENİ KAHRETMESİN PİSLİK HERİF </p>
+        <p class="hint">İpucu asla vermicem❤️</p>
+    </div>
+
+    <!-- GALERİ -->
+    <div id="gallery">
+        <div class="gallery-header">
+            <h2>Seni seviyorum 12 dakika için de teşekkür ederim❤️</h2>
+            <p>Hepsinin zihninde olduğunu biliyorum <3 </p>
+        </div>
+
+        <div class="photos-wrapper">
+            <div class="photos-track" id="photosTrack">
+
+                <!-- 1. Fotoğraf (senin eklediğin) -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.21.22.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 2 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.21.35.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 3 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.22.31 (1).jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 4 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.22.31.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 5 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.53.40.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 6 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 02.00.05.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 7 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.57.37.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 8 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 02.01.10.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 9 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.58.58.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+                <!-- 10 -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.55.49.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+
+
+                <!-- ===== TEKRAR (sonsuz kayma için) ===== -->
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.21.35.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.22.31.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.22.31 (1).jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.21.22.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.58.58.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 02.01.10.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 02.00.05.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.55.49.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.57.37.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+                </div>
+                <div class="photo-card">
+                    <img src="WhatsApp Image 2026-10-31 at 01.53.40.jpeg" alt="anımız">
+                    <div class="photo-caption"></div>
+            
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const day = document.getElementById('day');
+        const month = document.getElementById('month');
+        const year = document.getElementById('year');
+
+        day.addEventListener('input', () => {
+            if (day.value.length === 2) month.focus();
+        });
+        month.addEventListener('input', () => {
+            if (month.value.length === 2) year.focus();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        function checkPassword() {
+            const d = day.value.padStart(2, '0');
+            const m = month.value.padStart(2, '0');
+            const y = year.value;
+            const entered = `${d}/${m}/${y}`;
+            const correct = "07/08/2026";
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (entered === correct) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('gallery').style.display = 'block';
+            } else {
+                errorMsg.classList.add('show');
+                document.querySelector('.date-inputs').style.animation = 'shake 0.4s';
+                setTimeout(() => {
+                    document.querySelector('.date-inputs').style.animation = '';
+                    errorMsg.classList.remove('show');
+                }, 1500);
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+    </style>
+</body>
+</html>
